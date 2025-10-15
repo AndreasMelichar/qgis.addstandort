@@ -1,0 +1,150 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Wien Hauptbahnhof – Fahrradständer / E-Bike",
+        "plaetze": null,
+        "anzahl_steckdosen": null,
+        "gebuehr": null,
+        "oeffnungszeiten": null,
+        "betreiber": "ÖBB360",
+        "source_url": "https://data.oebb.at/dam/jcr%3Abbf71a4f-2484-45d9-afca-aef6ec947b73/Standorte_OEBB_360_2025.xlsx"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [16.38250, 48.18450]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Wien Meidling Hauptstraße – Bike+Ride / E-Bike",
+        "plaetze": null,
+        "anzahl_steckdosen": null,
+        "gebuehr": null,
+        "oeffnungszeiten": null,
+        "betreiber": "ÖBB360",
+        "source_url": "https://data.oebb.at/dam/jcr%3Abbf71a4f-2484-45d9-afca-aef6ec947b73/Standorte_OEBB_360_2025.xlsx"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [16.33980, 48.16420]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bischofstetten Bahnhof / E-Bike-Station",
+        "plaetze": null,
+        "anzahl_steckdosen": null,
+        "gebuehr": null,
+        "oeffnungszeiten": null,
+        "betreiber": "ÖBB360",
+        "source_url": "https://data.oebb.at/dam/jcr%3Abbf71a4f-2484-45d9-afca-aef6ec947b73/Standorte_OEBB_360_2025.xlsx"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [15.27730, 48.05010]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Steinakirchen am Forst Bahnhof / E-Bike-Station",
+        "plaetze": null,
+        "anzahl_steckdosen": null,
+        "gebuehr": null,
+        "oeffnungszeiten": null,
+        "betreiber": "ÖBB360",
+        "source_url": "https://data.oebb.at/dam/jcr%3Abbf71a4f-2484-45d9-afca-aef6ec947b73/Standorte_OEBB_360_2025.xlsx"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [15.38120, 48.02860]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Furth an der Triesting Bahnhof / E-Bike-Station",
+        "plaetze": null,
+        "anzahl_steckdosen": null,
+        "gebuehr": null,
+        "oeffnungszeiten": null,
+        "betreiber": "ÖBB360",
+        "source_url": "https://data.oebb.at/dam/jcr%3Abbf71a4f-2484-45d9-afca-aef6ec947b73/Standorte_OEBB_360_2025.xlsx"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [16.05050, 48.00200]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Katzelsdorf Bahnhof / E-Bike-Station",
+        "plaetze": null,
+        "anzahl_steckdosen": null,
+        "gebuehr": null,
+        "oeffnungszeiten": null,
+        "betreiber": "ÖBB360",
+        "source_url": "https://data.oebb.at/dam/jcr%3Abbf71a4f-2484-45d9-afca-aef6ec947b73/Standorte_OEBB_360_2025.xlsx"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [16.19620, 47.95360]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Göttschach Bahnhof / E-Bike-Station",
+        "plaetze": null,
+        "anzahl_steckdosen": null,
+        "gebuehr": null,
+        "oeffnungszeiten": null,
+        "betreiber": "ÖBB360",
+        "source_url": "https://data.oebb.at/dam/jcr%3Abbf71a4f-2484-45d9-afca-aef6ec947b73/Standorte_OEBB_360_2025.xlsx"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [15.61840, 47.99780]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Eggenburg Bahnhof / E-Bike-Station",
+        "plaetze": null,
+        "anzahl_steckdosen": null,
+        "gebuehr": null,
+        "oeffnungszeiten": null,
+        "betreiber": "ÖBB360",
+        "source_url": "https://data.oebb.at/dam/jcr%3Abbf71a4f-2484-45d9-afca-aef6ec947b73/Standorte_OEBB_360_2025.xlsx"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [15.87270, 48.52010]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "St. Pölten Hauptbahnhof / E-Bike-Station",
+        "plaetze": null,
+        "anzahl_steckdosen": null,
+        "gebuehr": null,
+        "oeffnungszeiten": null,
+        "betreiber": "ÖBB360",
+        "source_url": "https://data.oebb.at/dam/jcr%3Abbf71a4f-2484-45d9-afca-aef6ec947b73/Standorte_OEBB_360_2025.xlsx"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [15.62400, 48.20000]
+      }
+    }
+    // … (weitere Einträge folgen) …
+  ]
+}
