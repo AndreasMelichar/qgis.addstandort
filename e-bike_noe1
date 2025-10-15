@@ -1,0 +1,139 @@
+import os
+import time
+import json
+import requests
+import pandas as pd
+from pathlib import Path
+
+try:
+    from shapely.geometry import Point
+    import geopandas as gpd
+except ImportError:
+    Point = None
+    gpd = None
+
+OUT_DIR = Path("output")
+OUT_DIR.mkdir(exist_ok=True)
+
+# Quellen
+URL_OEBB_XLSX = "https://data.oebb.at/dam/jcr%3Abbf71a4f-2484-45d9-afca-aef6ec947b73/Standorte_OEBB_360_2025.xlsx"
+URL_OEAMTC_JSON = "https://mobilitaetsdaten.gv.at/api/oeamtc/fahrradstationen.json"
+
+def geocode_address(address, country="Austria", sleep=1.0):
+    NOMINATIM = "https://nominatim.openstreetmap.org/search"
+    params = {'q': f"{address}, {country}", 'format': 'json', 'limit':1}
+    try:
+        r = requests.get(NOMINATIM, params=params, headers={'User-Agent':'ebike-agg-script'})
+        if r.status_code == 200:
+            res = r.json()
+            if res:
+                return float(res[0]['lon']), float(res[0]['lat'])
+    except Exception as e:
+        print("Geocode error:", e)
+    time.sleep(sleep)
+    return None
+
+def parse_oebb_xlsx(path_or_url):
+    # falls URL, lade temporär
+    if str(path_or_url).lower().startswith("http"):
+        r = requests.get(path_or_url)
+        tmp = OUT_DIR / "oebb_temp.xlsx"
+        tmp.write_bytes(r.content)
+        path = tmp
+    else:
+        path = Path(path_or_url)
+    df = pd.read_excel(path)
+    features = []
+    for _, row in df.iterrows():
+        name = row.get('Bezeichnung') or row.get('Station_Name') or row.get('Name')
+        lon = row.get('LON') or row.get('Longitude')
+        lat = row.get('LAT') or row.get('Latitude')
+        # Falls Koordinaten fehlen, versuche mit Adresse
+        addr = row.get('Adresse') or row.get('Gemeinde') or None
+        if pd.isna(name):
+            continue
+        props = {
+            'name': name,
+            'plaetze': row.get('Plaetze') if 'Plaetze' in row else None,
+            'anzahl_steckdosen': row.get('Steckdosen') if 'Steckdosen' in row else None,
+            'gebuehr': row.get('Gebühr') if 'Gebühr' in row else None,
+            'oeffnungszeiten': row.get('Öffnungszeiten') if 'Öffnungszeiten' in row else None,
+            'betreiber': row.get('Betreiber') if 'Betreiber' in row else "ÖBB360",
+            'source_url': URL_OEBB_XLSX
+        }
+        geom = None
+        if pd.notnull(lon) and pd.notnull(lat):
+            geom = [float(lon), float(lat)]
+        elif addr:
+            ge = geocode_address(addr + ", Österreich")
+            if ge:
+                geom = [ge[0], ge[1]]
+        features.append({'type':'Feature', 'properties':props,
+                         'geometry': {'type':'Point', 'coordinates':geom} if geom else None})
+    return features
+
+def parse_oeamtc_json(json_url):
+    r = requests.get(json_url)
+    data = r.json()
+    feats = []
+    # prüfe, ob 'features' vorhanden
+    items = data.get('features') if isinstance(data, dict) and 'features' in data else data
+    for it in items:
+        props = {}
+        geom = None
+        if 'properties' in it:
+            p = it['properties']
+            props['name'] = p.get('name') or p.get('Bezeichnung')
+            props['plaetze'] = p.get('plaetze') or None
+            props['anzahl_steckdosen'] = p.get('anzahl_steckdosen') or None
+            props['gebuehr'] = p.get('gebuehr') or p.get('kosten') or None
+            props['oeffnungszeiten'] = p.get('oeffnungszeiten') or None
+            props['betreiber'] = p.get('betreiber') or "ÖAMTC"
+            props['source_url'] = json_url
+            if 'geometry' in it and it['geometry']:
+                geom = it['geometry']['coordinates']
+        else:
+            props['name'] = it.get('name')
+            props['source_url'] = json_url
+        feats.append({'type':'Feature', 'properties':props,
+                      'geometry': {'type':'Point','coordinates':geom} if geom else None})
+    return feats
+
+def aggregate():
+    all_feats = []
+    # ÖBB
+    print("Lade ÖBB-Stationen …")
+    try:
+        feats = parse_oebb_xlsx(URL_OEBB_XLSX)
+        print(f"ÖBB: {len(feats)} Einträge")
+        all_feats.extend(feats)
+    except Exception as e:
+        print("Fehler ÖBB:", e)
+    # ÖAMTC
+    print("Lade ÖAMTC-Stationen …")
+    try:
+        feats2 = parse_oeamtc_json(URL_OEAMTC_JSON)
+        print(f"ÖAMTC: {len(feats2)} Einträge")
+        all_feats.extend(feats2)
+    except Exception as e:
+        print("Fehler ÖAMTC:", e)
+    # Deduplizieren: Name + Koordinate
+    uniq = {}
+    for f in all_feats:
+        name = f['properties'].get('name') or "unknown"
+        coords = None
+        if f.get('geometry'):
+            coords = tuple(f['geometry']['coordinates'])
+        key = f"{name}__{coords}"
+        if key not in uniq:
+            uniq[key] = f
+    feats = list(uniq.values())
+    geojson = {'type':'FeatureCollection', 'features': feats}
+    outp = OUT_DIR / "ebike_noe_full.json"
+    with open(outp, 'w', encoding='utf-8') as fh:
+        json.dump(geojson, fh, ensure_ascii=False, indent=2)
+    print("Fertig: geschrieben nach", outp)
+    return outp
+
+if __name__ == "__main__":
+    aggregate()
